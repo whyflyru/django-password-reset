@@ -81,19 +81,13 @@ class PasswordRecoveryForm(forms.Form):
     def get_user_by_both(self, username):
         key = '__%sexact'
         key = key % '' if self.case_sensitive else key % 'i'
-
-        def f(field):
-            return Q(**{field + key: username})
+        f = lambda field: Q(**{field + key: username})
         filters = f('username') | f('email')
         User = get_user_model()
-        try:
-            user = User._default_manager.get(filters)
-        except User.DoesNotExist:
+        user = User._default_manager.filter(filters).last()
+        if not user:
             raise forms.ValidationError(self.error_messages['not_found'],
                                         code='not_found')
-        except User.MultipleObjectsReturned:
-            raise forms.ValidationError(_("Unable to find user."))
-
         return user
 
 
