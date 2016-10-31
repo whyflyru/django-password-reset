@@ -9,7 +9,7 @@ from setuptools import find_packages
 
 setup(
     name='django-password-reset',
-    version=__import__('password_reset').__version__,
+    version='{0}{1}'.format(__import__('password_reset').__version__, 'wf'),
     author='Bruno Renie',
     author_email='bruno@renie.fr',
     packages=find_packages(),
